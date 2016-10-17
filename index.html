@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans|Roboto" rel="stylesheet">
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="http://d3js.org/topojson.v1.min.js"></script>
+    <style type="text/css" media="screen">
+body {
+  padding: 0;
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  overflow: hidden;
+}
+
+.state-name {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  fill: #333;
+  pointer-events: none;
+}
+.state-name.delaware,
+.state-name.district-of-columbia {
+  font-size: 1px;
+}
+
+.state-name.maryland,
+.state-name.new-jersey,
+.state-name.connecticut,
+.state-name.new-hampshire,
+.state-name.vermont{
+  font-size: 4px;
+}
+.rhode-island {
+  font-size: 2px;
+}
+.indiana {
+  font-size: 8px;
+}
+
+.california {
+    transform: translateX(-15px);
+}
+
+.state-name.missouri {
+    transform: translateY(10px);
+}
+
+.state-name.illinois {
+    transform: translateY(20px);
+}
+
+.state-name.michigan {
+    transform: translateX(14px) translateY(20px);
+}
+
+.state-name.georgia {
+    transform: translateY(-15px);
+}
+
+.state-name.new-york {
+    transform: translateY(-18px);
+}
+.state-name.mississippi {
+    transform: translateY(15px);
+}
+
+.state-name.pennsylvania {
+  transform: translateY(-5px);
+}
+.washington {
+  transform: translateY(5px);
+}
+
+.state {
+  cursor: pointer;
+  stroke: #999;
+  stroke-dasharray: 2,2;
+  stroke-linejoin: round;
+}
+
+.state.active {
+  fill: #efefef;
+}
+
+.question {
+  font-family: 'Open Sans', sans-serif;
+  position: absolute;
+  color: white;
+  white-space:nowrap;
+  pointer-events: none;
+}
+
+#question .query {
+  color: #f70d5d;
+}
+
+    </style>
+  </head>
+
+  <body>
+    <script src="bundle.js"></script>
+  </body>
+
+</html>

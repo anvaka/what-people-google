@@ -11,5 +11,8 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/anvaka/what-people-google"
+  },
+  "dependencies": {
+    "panzoom": "^1.2.2"
   }
 }
