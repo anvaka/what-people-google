@@ -5,7 +5,7 @@ var height = window.innerHeight;
 var usa = require('./lib/usModel.js');
 var colors = require('./prettyColors.js');
 var queries = require('./lib/queries.js');
-var animator = require('./questionAnimator.js')(document.querySelector('.questions-container'));
+var autoSuggestList = require('./questionAnimator.js')(document.querySelector('.questions-container'));
 var makeOptions = require('./makeOptions.js');
 
 var mapBackgroundColor = '#A3CCFF';
@@ -104,8 +104,8 @@ function selectState() {
   var color = colors[this.id % colors.length];
   background.transition().style('fill', color);
 
-  var record = query.getSearchRecord(selectedStateName);
-  animator.animate(record.suggestions);
+  var suggestions = query.getAllSuggestionsForState(selectedStateName);
+  autoSuggestList.show(suggestions);
 
   function thisState(d) {
     return !notThisState(d);
@@ -125,7 +125,7 @@ function reset() {
   d3.selectAll('.state').transition().style('opacity', '1');
   d3.selectAll('.state-name').transition().style('opacity', 1);
 
-  animator.stop();
+  autoSuggestList.hide();
 }
 
 function cssify(str) {

@@ -1,21 +1,21 @@
-module.exports = createAnimator;
+module.exports = createAutoSuggestList;
 
-function createAnimator(container) {
+function createAutoSuggestList(domContainer) {
   var currentElements = [];
 
   var api = {
-    animate: animate,
-    stop: stop
+    show: show,
+    hide: hide
   };
 
   return api;
 
-  function animate(list) {
-    stop();
-    currentElements = list.map(toTextContainer);
+  function show(list) {
+    hide();
+    currentElements = list.map(toSuggestionContainer);
   }
 
-  function stop() {
+  function hide() {
     currentElements.forEach(removeFromContainer);
     currentElements = [];
   }
@@ -24,12 +24,12 @@ function createAnimator(container) {
     element.dispose();
   }
 
-  function toTextContainer(suggestion, i) {
-    return textContainer(container, suggestion, i);
+  function toSuggestionContainer(suggestion, i) {
+    return suggestionContainer(domContainer, suggestion, i);
   }
 }
 
-function textContainer(parent, content, index) {
+function suggestionContainer(parentElement, content, index) {
   var fontSize = px((10 - index) + 18);
 
   var child = createHtmlElement(content);
@@ -40,13 +40,13 @@ function textContainer(parent, content, index) {
   }
 
   function appendChild() {
-    parent.appendChild(child);
+    parentElement.appendChild(child);
     addTimeout = 0;
   }
 
   function dispose() {
     if (addTimeout) window.clearTimeout(addTimeout);
-    else parent.removeChild(child);
+    else parentElement.removeChild(child);
   }
 
   function createHtmlElement(innerHTML) {
