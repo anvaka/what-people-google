@@ -5,6 +5,7 @@ module.exports = createAutoSuggestList;
 
 function createAutoSuggestList(domContainer) {
   var currentElements = [];
+  var hasChildrenClass = 'has-children';
 
   var api = {
     /**
@@ -21,13 +22,19 @@ function createAutoSuggestList(domContainer) {
   return api;
 
   function show(list) {
-    hide();
+    currentElements.forEach(removeFromContainer);
     currentElements = list.map(toSuggestionContainer);
+    if (list.length > 0) {
+      domContainer.classList.add(hasChildrenClass);
+    } else {
+      domContainer.classList.remove(hasChildrenClass);
+    }
   }
 
   function hide() {
     currentElements.forEach(removeFromContainer);
     currentElements = [];
+    domContainer.classList.remove(hasChildrenClass);
   }
 
   function removeFromContainer(element) {

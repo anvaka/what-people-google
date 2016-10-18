@@ -21,14 +21,20 @@ function createMap(mapModel, options) {
   // First we set up the DOM
   var geoPath = makeGeoPath();
   var svg = makeSVGContainer();
-  var background = makeMapBackground();
+  var mapBackground = makeMapBackground();
   var statesOutline = makeStatesOutline();
   var textLayer = makeTextLayer();
 
   // Then we make zoomable/panable
-  panzoom(statesOutline[0][0]);
+  var zoomContainer = statesOutline[0][0];
+  panzoom(zoomContainer);
 
   var selectedState = d3.select(null);
+  var selectStateTimeout; // used to differentiate between pan and select events
+  var ignoreNextStateSelect;
+
+  // and then make it respond to user events.
+  listenToEvents();
 
   var api = {
     /**
@@ -45,50 +51,78 @@ function createMap(mapModel, options) {
   // That's it. The public API is over.
   return api;
 
+  function reset() {
+    selectedState.classed('active', false);
+    selectedState = d3.select(null);
+
+    mapBackground.transition().style('fill', mapBackgroundColor);
+
+    d3.selectAll('.state').transition().style('opacity', '1');
+    d3.selectAll('.state-name').transition().style('opacity', 1);
+
+    options.onStateSelected(null);
+  }
+
   function refreshLabels() {
     textLayer.remove();
     textLayer = makeTextLayer();
   }
 
-  function selectState() {
-    if (selectedState.node() === this) return reset();
+  function listenToEvents() {
+    window.addEventListener('resize', onWindowResize, false);
 
-    selectedState.classed('active', false);
-    selectedState = d3.select(this).classed('active', true);
+    mapBackground.on('click', reset).on('touchstart', reset)
 
-    var selectedStateName = mapModel.getName(this);
+    statesOutline.selectAll('path')
+      .on('mouseup', scheduleSelectState)
+      .on('touchend', scheduleSelectState);
 
-    d3.selectAll('.state').filter(notThisState).transition().style('opacity', '0.3');
-    d3.selectAll('.state-name').filter(notThisState).transition().style('opacity', '0.3');
+    zoomContainer.addEventListener('panstart', cancelSelectState);
+  }
 
-    d3.select(this).style('opacity', 1);
-    d3.selectAll('.state-name').filter(thisState).style('opacity', 1);
-
-    var color = prettyColors[this.id % prettyColors.length];
-    background.transition().style('fill', color);
-
-    options.onStateSelected(selectedStateName);
-
-    function thisState(d) {
-      return !notThisState(d);
+  function cancelSelectState() {
+    if (selectStateTimeout) {
+      window.clearTimeout(selectStateTimeout);
+      selectStateTimeout = 0;
+    } else {
+      // we fired firest, make sure next selectState is ignored.
+      ignoreNextStateSelect = true;
     }
+  }
 
-    function notThisState(d) {
-      return mapModel.getName(d) !== selectedStateName;
+  function scheduleSelectState() {
+    if (ignoreNextStateSelect) {
+      ignoreNextStateSelect = false;
+      return;
     }
+    selectStateTimeout = setTimeout(selectState.bind(this), 30);
+  }
+
+  function onWindowResize() {
+    width = window.innerWidth;
+    height = window.innerHeight;
+
+    updateDimensions();
+  }
+
+  function updateDimensions() {
+    svg.style('width', px(width)).style('height', px(height));
+
+    mapBackground.attr('width', width).attr('height', height)
   }
 
   function makeGeoPath() {
     var projection = d3.geo.albersUsa()
       .scale(2100)
       .translate([760, height / 2]);
+
     return d3.geo.path().projection(projection);
   }
 
   function makeSVGContainer() {
     return d3.select('body').append('svg')
-      .style('width', width + 'px')
-      .style('height', height + 'px');
+      .style('width', px(width))
+      .style('height', px(height));
   }
 
   function makeMapBackground() {
@@ -97,7 +131,6 @@ function createMap(mapModel, options) {
       .attr('fill', mapBackgroundColor)
       .attr('width', width)
       .attr('height', height)
-      .on('click', reset);
   }
 
   function makeStatesOutline() {
@@ -114,8 +147,7 @@ function createMap(mapModel, options) {
       .attr('fill', stateBackgroundColor)
       .attr('id', function(d) {
         return d.id;
-      })
-      .on('click', selectState);
+      });
 
     return statesOutline;
   }
@@ -134,28 +166,44 @@ function createMap(mapModel, options) {
         var stateName = mapModel.getName(d);
         return options.getLabel(stateName);
       })
-      .attr('x', function(d) {
-        return geoPath.centroid(d)[0];
-      })
-      .attr('y', function(d) {
-        return geoPath.centroid(d)[1];
-      })
+      .attr('x', function(d) { return geoPath.centroid(d)[0]; })
+      .attr('y', function(d) { return geoPath.centroid(d)[1]; })
       .attr('text-anchor', 'middle');
   }
 
-  function reset() {
+
+  function selectState() {
+    selectStateTimeout = 0;
+    if (selectedState.node() === this) return reset();
+
     selectedState.classed('active', false);
-    selectedState = d3.select(null);
+    selectedState = d3.select(this).classed('active', true);
 
-    background.transition().style('fill', mapBackgroundColor);
+    var selectedStateName = mapModel.getName(this);
 
-    d3.selectAll('.state').transition().style('opacity', '1');
-    d3.selectAll('.state-name').transition().style('opacity', 1);
+    d3.selectAll('.state').filter(notThisState).transition().style('opacity', '0.3');
+    d3.selectAll('.state-name').filter(notThisState).transition().style('opacity', '0.3');
 
-    options.onStateSelected(null);
+    d3.select(this).style('opacity', 1);
+    d3.selectAll('.state-name').filter(thisState).style('opacity', 1);
+
+    var color = prettyColors[this.id % prettyColors.length];
+    mapBackground.transition().style('fill', color);
+
+    options.onStateSelected(selectedStateName);
+
+    function thisState(d) {
+      return !notThisState(d);
+    }
+
+    function notThisState(d) {
+      return mapModel.getName(d) !== selectedStateName;
+    }
   }
 
   function cssify(str) {
     return str.toLowerCase().replace(/ /g, '-')
   }
 }
+
+function px(x) { return x + 'px'; }

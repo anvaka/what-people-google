@@ -16,6 +16,10 @@ body {
   overflow: hidden;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 .intro {
   position: absolute;
   left: 20px;
@@ -32,12 +36,6 @@ body {
   from {opacity: 0; }
 }
 
-.questions-container {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
 .suggestion {
   font-family: 'Open Sans', sans-serif;
   white-space:nowrap;
@@ -45,6 +43,7 @@ body {
   color: #333;
   text-decoration: none;
   pointer-events: auto;
+  display: block;
 }
 
 .suggestion:hover {
@@ -158,6 +157,37 @@ h3 {
   font-weight: normal;
   color: #444;
   margin: 8px 0;
+}
+
+@media (max-width: 425px) {
+  .intro {
+    left: 0;
+    padding: 0 10px;
+    width: 100%;
+  }
+
+  .input-question {
+    width: 100%;
+  }
+
+  .suggestion {
+    /* TODO: can I remove this important? */
+    font-size: 16px !important;
+  }
+
+  .questions-container {
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+
+  .questions-container.has-children {
+    height: 100px;
+    padding: 4px 18px;
+    overflow: auto;
+  }
+
+  h3 {
+    font-size: 18px;
+  }
 }
     </style>
   </head>
