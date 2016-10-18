@@ -4,18 +4,18 @@ var height = window.innerHeight;
 
 var usa = require('./lib/usModel.js');
 var colors = require('./prettyColors.js');
-var getQuestions = require('./getQuestions.js');
+var getQuestions = require('./lib/getQuestions.js');
 var animator = require('./questionAnimator.js')(document.querySelector('.questions-container'));
 var makeOptions = require('./makeOptions.js');
 
 var mapBackgroundColor = '#A3CCFF';
 var stateBackgroundColor = '#F2ECCF';
 
-var dataSet = require('./why.json')
-var dropDownQuestions = Object.keys(dataSet).map(function(key) {
+var questionsDataSet = require('./data/questions.json')
+var dropDownQuestions = Object.keys(questionsDataSet).map(function(key) {
   return {
     value: key,
-    text: dataSet[key].display,
+    text: questionsDataSet[key].display,
     selected: false
   };
 });
@@ -25,7 +25,7 @@ dropDownQuestions[0].selected = true;
 var questionElement = document.querySelector('.input-question');
 makeOptions(questionElement, dropDownQuestions, onNewQuestionSelected);
 
-var questions = getQuestions(dataSet['why-is']);
+var questions = getQuestions(questionsDataSet['why-is']);
 
 var active = d3.select(null);
 var projection = d3.geo.albersUsa()
@@ -66,7 +66,8 @@ var text = appendTextLayer();
 
 function onNewQuestionSelected(question) {
     reset();
-    questions = getQuestions(dataSet[question]);
+
+    questions = getQuestions(questionsDataSet[question]);
     text.remove();
     text = appendTextLayer();
 }
