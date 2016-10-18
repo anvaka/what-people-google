@@ -4,7 +4,8 @@
   "description": "Visualization of what people google",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "browserify index.js > bundle.js"
   },
   "author": "Andrei Kashcha",
   "license": "MIT",
@@ -14,5 +15,8 @@
   },
   "dependencies": {
     "panzoom": "^1.2.2"
+  },
+  "devDependencies": {
+    "browserify": "^13.1.0"
   }
 }
