@@ -48,7 +48,13 @@ The main map rendering code is in `view/createMap.js`.
 I didn't want to use any UI-level libraries (like React or vue.js), mostly because the UI
 is super simple. All view-layer code can be found in `view` folder.
 
-The map is rendered as SVG with d3, and pan/zoom support is done by [panzoom](https://github.com/anvaka/panzoom).
+Animations are mostly done by CSS3:
+
+![fade in animation](https://raw.githubusercontent.com/anvaka/what-people-google/master/docs/css-animation.gif)
+
+The map is rendered as SVG with d3, and pan/zoom support is done by [panzoom](https://github.com/anvaka/panzoom):
+
+![zoom in animation](https://raw.githubusercontent.com/anvaka/what-people-google/master/docs/zoom.gif)
 
 ## Hosting
 
