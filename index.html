@@ -5,6 +5,11 @@
     <meta http-equiv='content-type' content='text/html; charset=utf-8' />
     <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge' >
+    <meta name='title' content='What people Google - States map' />
+    <meta name='author' content='Andrei Kashcha'>
+    <meta name='Description' content='Top Google autocomplete resutls for different questions rendered as a map.'>
+    <meta name='keywords' content='google autocomplete, visualization, why is [state name]' />
+    <title>What people Google - States map</title>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans|Roboto" rel="stylesheet">
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src="http://d3js.org/topojson.v1.min.js"></script>
@@ -158,6 +163,18 @@ h3 {
   color: #444;
   margin: 8px 0;
 }
+  .about {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding: 4px 18px;
+    background-color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    display: block;
+    font-size: 18px;
+    width: 300px;
+    text-align: center;
+  }
 
 @media (max-width: 425px) {
   .intro {
@@ -167,6 +184,9 @@ h3 {
   }
 
   .input-question {
+    width: 100%;
+  }
+  .about {
     width: 100%;
   }
 
@@ -200,7 +220,7 @@ h3 {
       </div>
       <div class='questions-container'></div>
     </div>
+    <a href='https://github.com/anvaka/what-people-google' class='about'>Source Code / About...</a>
     <script src="bundle.js"></script>
   </body>
-
 </html>
