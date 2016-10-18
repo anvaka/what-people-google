@@ -2,7 +2,7 @@
 
 Visualization of what people google:
 
-![why is state name ... ?](https://raw.githubusercontent.com/anvaka/what-people-google/master/docs/whi_is.png)
+![why is state name ... ?](https://raw.githubusercontent.com/anvaka/what-people-google/master/docs/why_is.png)
 
 For each State in the United States of America it renders top Google autocomplete
 results as a map.
