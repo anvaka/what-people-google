@@ -4,12 +4,27 @@ var height = window.innerHeight;
 
 var colors = require('./prettyColors.js');
 var getQuestions = require('./getQuestions.js');
-var animator = require('./questionAnimator.js')(document.body);
+var animator = require('./questionAnimator.js')(document.querySelector('.questions-container'));
+var makeOptions = require('./makeOptions.js');
 
 var mapBackgroundColor = '#A3CCFF';
 var stateBackgroundColor = '#F2ECCF';
 
-var questions = getQuestions(require('./why.json'));
+var dataSet = require('./why.json')
+var dropDownQuestions = Object.keys(dataSet).map(function(key) {
+  return {
+    value: key,
+    text: dataSet[key].display,
+    selected: false
+  };
+});
+
+dropDownQuestions[0].selected = true;
+
+var questionElement = document.querySelector('.input-question');
+makeOptions(questionElement, dropDownQuestions, onNewQuestionSelected);
+
+var questions = getQuestions(dataSet['why-is']);
 
 var active = d3.select(null);
 var projection = d3.geo.albersUsa()
@@ -20,8 +35,8 @@ var path = d3.geo.path()
     .projection(projection);
 
 var svg = d3.select("body").append("svg")
-    .style('width', width)
-    .style('height', height)
+    .style('width', width + 'px')
+    .style('height', height + 'px')
 
 var background = svg.append('rect')
     .attr('class', 'background')
@@ -36,7 +51,7 @@ var scene = document.getElementById('scene')
 var panzoom = require('panzoom');
 panzoom(scene);
 
-var unitedState = require('./us.json');
+var unitedState = require('./us-states.json');
 
 var data = topojson.feature(unitedState, unitedState.objects.states).features;
 var names = require('./getNames.js')();
@@ -53,26 +68,38 @@ g.append('g')
   .attr('id', function (d) { return d.id; })
   .on('click', selectState);
 
-g.append('g')
-  .attr('class', 'states-names')
-  .selectAll('text')
-  .data(data)
-  .enter()
-  .append('svg:text')
-  .attr('class', function(d)  {
-    return 'state-name ' + cssify(getName(d));
-  })
-  .text(function(d){
-    var stateName = getName(d);
-    return questions.getTextByStateName(stateName);
-  })
-  .attr('x', function(d){
-    return path.centroid(d)[0];
-  })
-  .attr('y', function(d){
-    return path.centroid(d)[1];
-  })
-  .attr('text-anchor', 'middle');
+var text = renderFirstSuggestionOnStates();
+
+function onNewQuestionSelected(question) {
+    reset();
+    questions = getQuestions(dataSet[question]);
+    text.remove();
+    text = renderFirstSuggestionOnStates();
+}
+
+
+function renderFirstSuggestionOnStates() {
+    return g.append('g')
+        .attr('class', 'states-names')
+        .selectAll('text')
+        .data(data)
+        .enter()
+        .append('svg:text')
+        .attr('class', function(d)  {
+            return 'state-name ' + cssify(getName(d));
+        })
+        .text(function(d){
+            var stateName = getName(d);
+            return questions.getTextByStateName(stateName);
+        })
+        .attr('x', function(d){
+            return path.centroid(d)[0];
+        })
+        .attr('y', function(d){
+            return path.centroid(d)[1];
+        })
+        .attr('text-anchor', 'middle');
+}
 
 function selectState() {
   if (active.node() === this) return reset();

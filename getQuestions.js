@@ -1,5 +1,6 @@
 module.exports = getQuestions;
 
+// https://output.jsbin.com/xakohazulo/1
 function getQuestions(dataSet) {
   var stateNameToRecord = buildIndex();
 
@@ -18,7 +19,7 @@ function getQuestions(dataSet) {
 
   function buildIndex() {
     var lookup = {};
-    dataSet.forEach(function(x) {
+    dataSet.records.forEach(function(x) {
       lookup[x.state] = x;
     });
     return lookup;
@@ -33,6 +34,8 @@ function getQuestions(dataSet) {
 
     var record = getRecord(stateName);
     var suggestionsCount = record.suggestions.length;
+    if (suggestionsCount === 0) return '';
+
     if (idx >= suggestionsCount) {
       idx = idx % suggestionsCount;
     }

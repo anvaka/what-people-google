@@ -2,7 +2,9 @@
 <html>
 
   <head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <meta http-equiv='content-type' content='text/html; charset=utf-8' />
+    <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge' >
     <link href="https://fonts.googleapis.com/css?family=Open+Sans|Roboto" rel="stylesheet">
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src="http://d3js.org/topojson.v1.min.js"></script>
@@ -12,6 +14,75 @@ body {
   margin: 0;
   font-family: 'Roboto', sans-serif;
   overflow: hidden;
+}
+
+.intro {
+  position: absolute;
+  left: 20px;
+  pointer-events: none;
+}
+
+.type-it {
+  animation-fill-mode: both;
+  animation-name: fadeIn;
+  animation-duration: 1s;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0; }
+}
+
+.questions-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.question {
+  font-family: 'Open Sans', sans-serif;
+  white-space:nowrap;
+  overflow: hidden;
+  color: #333;
+  text-decoration: none;
+  pointer-events: auto;
+}
+
+.question:hover {
+  font-weight: bold;
+}
+
+.question b {
+  color: white;
+  text-shadow: 1px 1px 1px rgba(51,51,51,0.8);
+  font-weight: normal;
+}
+.input-question {
+  background: white;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  padding-left: 18px;
+  color: #333;
+  box-shadow: 0 2px 4px rgba(0,0,0,.2),0 -1px 0 rgba(0,0,0,.02);
+  width: 380px;
+  position: relative;
+  pointer-events: auto;
+}
+
+.input-question .label {
+    cursor: pointer;
+}
+
+.input-question:hover {
+  color: #EA4335;
+}
+
+select.back-dropdown {
+  cursor: pointer;
+  position: absolute;
+  width: 100%;
+  left: 0;
+  opacity: 0;
 }
 
 .state-name {
@@ -52,18 +123,18 @@ body {
 }
 
 .state-name.michigan {
-    transform: translateX(14px) translateY(20px);
+  transform: translateX(14px) translateY(20px);
 }
 
 .state-name.georgia {
-    transform: translateY(-15px);
+  transform: translateY(-15px);
 }
 
 .state-name.new-york {
-    transform: translateY(-18px);
+  transform: translateY(-18px);
 }
 .state-name.mississippi {
-    transform: translateY(15px);
+  transform: translateY(15px);
 }
 
 .state-name.pennsylvania {
@@ -83,23 +154,22 @@ body {
 .state.active {
   fill: #efefef;
 }
-
-.question {
-  font-family: 'Open Sans', sans-serif;
-  position: absolute;
-  color: white;
-  white-space:nowrap;
-  pointer-events: none;
+h3 {
+  font-weight: normal;
+  color: #444;
+  margin: 8px 0;
 }
-
-#question .query {
-  color: #f70d5d;
-}
-
     </style>
   </head>
 
   <body>
+    <div class='intro'>
+      <h3>Top Google autocomplete results for</h3>
+      <div class='input-question'>
+        <span class='label'>Why is [state name] ... ?</span>
+      </div>
+      <div class='questions-container'></div>
+    </div>
     <script src="bundle.js"></script>
   </body>
 
