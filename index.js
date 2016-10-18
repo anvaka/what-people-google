@@ -4,7 +4,7 @@ var height = window.innerHeight;
 
 var usa = require('./lib/usModel.js');
 var colors = require('./prettyColors.js');
-var queries = require('./lib/getQuestions.js');
+var queries = require('./lib/queries.js');
 var animator = require('./questionAnimator.js')(document.querySelector('.questions-container'));
 var makeOptions = require('./makeOptions.js');
 
