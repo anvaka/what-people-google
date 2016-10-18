@@ -5,7 +5,7 @@ var height = window.innerHeight;
 var usa = require('./lib/usModel.js');
 var colors = require('./prettyColors.js');
 var queries = require('./lib/queries.js');
-var autoSuggestList = require('./questionAnimator.js')(document.querySelector('.questions-container'));
+var autoSuggestList = require('./lib/createAutoSuggestList.js')(document.querySelector('.questions-container'));
 var makeOptions = require('./makeOptions.js');
 
 var mapBackgroundColor = '#A3CCFF';
