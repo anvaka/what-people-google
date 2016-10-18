@@ -1,7 +1,8 @@
-/* globals d3, topojson */
+/* globals d3 */
 var width = window.innerWidth;
 var height = window.innerHeight;
 
+var usa = require('./lib/usModel.js');
 var colors = require('./prettyColors.js');
 var getQuestions = require('./getQuestions.js');
 var animator = require('./questionAnimator.js')(document.querySelector('.questions-container'));
@@ -45,21 +46,14 @@ var background = svg.append('rect')
     .attr('height', height)
     .on('click', reset);
 
-var g = svg.append('g').attr('id', 'scene');
-
-var scene = document.getElementById('scene')
+var scene = svg.append('g').attr('id', 'scene');
 var panzoom = require('panzoom');
-panzoom(scene);
+panzoom(scene[0][0]);
 
-var unitedState = require('./us-states.json');
-
-var data = topojson.feature(unitedState, unitedState.objects.states).features;
-var names = require('./getNames.js')();
-
-g.append('g')
+scene.append('g')
   .attr('class', 'states-bundle')
   .selectAll('path')
-  .data(data)
+  .data(usa.paths)
   .enter()
   .append('path')
   .attr('d', path)
@@ -68,37 +62,36 @@ g.append('g')
   .attr('id', function (d) { return d.id; })
   .on('click', selectState);
 
-var text = renderFirstSuggestionOnStates();
+var text = appendTextLayer();
 
 function onNewQuestionSelected(question) {
     reset();
     questions = getQuestions(dataSet[question]);
     text.remove();
-    text = renderFirstSuggestionOnStates();
+    text = appendTextLayer();
 }
 
-
-function renderFirstSuggestionOnStates() {
-    return g.append('g')
-        .attr('class', 'states-names')
-        .selectAll('text')
-        .data(data)
-        .enter()
-        .append('svg:text')
-        .attr('class', function(d)  {
-            return 'state-name ' + cssify(getName(d));
-        })
-        .text(function(d){
-            var stateName = getName(d);
-            return questions.getTextByStateName(stateName);
-        })
-        .attr('x', function(d){
-            return path.centroid(d)[0];
-        })
-        .attr('y', function(d){
-            return path.centroid(d)[1];
-        })
-        .attr('text-anchor', 'middle');
+function appendTextLayer() {
+  return scene.append('g')
+      .attr('class', 'states-names')
+      .selectAll('text')
+      .data(usa.paths)
+      .enter()
+      .append('svg:text')
+      .attr('class', function(d)  {
+          return 'state-name ' + cssify(usa.getName(d));
+      })
+      .text(function(d){
+        var stateName = usa.getName(d);
+        return questions.getTextByStateName(stateName);
+      })
+      .attr('x', function(d){
+          return path.centroid(d)[0];
+      })
+      .attr('y', function(d){
+          return path.centroid(d)[1];
+      })
+      .attr('text-anchor', 'middle');
 }
 
 function selectState() {
@@ -107,7 +100,7 @@ function selectState() {
   active.classed('active', false);
   active = d3.select(this).classed('active', true);
 
-  var selectedStateName = getName(this);
+  var selectedStateName = usa.getName(this);
 
   d3.selectAll('.state').filter(notThisState).transition().style('opacity', '0.3');
   d3.selectAll('.state-name').filter(notThisState).transition().style('opacity', '0.3');
@@ -126,7 +119,7 @@ function selectState() {
   }
 
   function notThisState(d) {
-    return getName(d) !== selectedStateName;
+    return usa.getName(d) !== selectedStateName;
   }
 }
 
@@ -144,10 +137,6 @@ function reset() {
   d3.selectAll('.state-name').transition().style('opacity', 1);
 
   animator.stop();
-}
-
-function getName(d) {
-  return names[d.id];
 }
 
 function cssify(str) {
