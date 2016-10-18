@@ -1,6 +1,11 @@
-module.exports = makeOptions;
+/**
+ * Renders an input-like search field, that works as a dropdown to pick a query.
+ * I don't want to allow arbitrary text input, since  Google's auto suggest
+ * API is not publicly available, and will ban hosts if they aggressively use it.
+ */
+module.exports = createDropDownQuestions;
 
-function makeOptions(container, questions, onChanged) {
+function createDropDownQuestions(container, questions, onChanged) {
   var select = document.createElement('select');
   select.classList.add('back-dropdown');
   select.innerHTML = questions.map(toOptionHTML).join('\n');

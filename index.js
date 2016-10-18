@@ -3,19 +3,21 @@ var width = window.innerWidth;
 var height = window.innerHeight;
 
 var usa = require('./lib/usModel.js');
-var colors = require('./prettyColors.js');
+
 var queries = require('./lib/queries.js');
-var autoSuggestList = require('./lib/createAutoSuggestList.js')(document.querySelector('.questions-container'));
-var makeOptions = require('./makeOptions.js');
+var dropDownQueries = queries.listQueries();
+dropDownQueries[0].selected = true;
+
+var autoSuggestList = require('./view/createAutoSuggestList.js')(el('.questions-container'));
+
+require('./view/createDropDownQuestions.js')(
+  el('.input-question'),
+  dropDownQueries,
+  onNewQuerySelected
+);
 
 var mapBackgroundColor = '#A3CCFF';
 var stateBackgroundColor = '#F2ECCF';
-
-var dropDownQueries =  queries.listQueries();
-dropDownQueries[0].selected = true;
-
-var questionElement = document.querySelector('.input-question');
-makeOptions(questionElement, dropDownQueries, onNewQuerySelected);
 
 var query = queries.getQuery('why-is');
 
@@ -101,6 +103,7 @@ function selectState() {
   d3.select(this).style('opacity', 1);
   d3.selectAll('.state-name').filter(thisState).style('opacity', 1);
 
+  var colors = require('./prettyColors.js');
   var color = colors[this.id % colors.length];
   background.transition().style('fill', color);
 
@@ -130,4 +133,8 @@ function reset() {
 
 function cssify(str) {
   return str.toLowerCase().replace(/ /g, '-')
+}
+
+function el(selector) {
+  return document.querySelector(selector)
 }
