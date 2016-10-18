@@ -23,8 +23,8 @@ If you want to have your own question rendered - open issue [here](https://githu
 
 # How it is made?
 
-For each states, I collected top 10 autosuggestions from Google. Then I use topojson
-and D3 to render them on a map. You can explore source code starting from the [`index.js`](https://github.com/anvaka/what-people-google/blob/master/index.js) file.
+For each state, I collected top 10 autosuggestions from Google. I use topojson and D3 to render map.
+You can explore source code starting from the [`index.js`](https://github.com/anvaka/what-people-google/blob/master/index.js) file.
 Below is a little bit more context.
 
 ## Queries suggestions
@@ -33,15 +33,14 @@ Google has [removed](https://webmasters.googleblog.com/2015/07/update-on-autocom
 autosuggestions API, so the data is pre-computed offline and stored into `data/queries.json` file.
 
 You can read more about available workaround [here](http://stackoverflow.com/questions/6428502/google-search-autocomplete-api).
-The workarounds are not include in the website, since Google will block
-your browser if you use them aggressively.
+The "workaround" is not built into the website, since Google may block your browser if you use "workaround" aggressively.
 
 ## Map rendering
 
 I'm using trimmed-down topojson file from [this](http://stackoverflow.com/q/19941975/125351) stackoverflow thread.
-The file has only States outline, and does not include counties.
+The file has only States outline, and does not include counties, which allows me to save space.
 
-The main map rendering code is in `view/createMap.js`.
+The main map rendering code is in the `view/createMap.js`.
 
 ## Libraries
 
@@ -52,7 +51,7 @@ Animations are mostly done by CSS3:
 
 ![fade in animation](https://raw.githubusercontent.com/anvaka/what-people-google/master/docs/css-animation.gif)
 
-The map is rendered as SVG with d3, and pan/zoom support is done by [panzoom](https://github.com/anvaka/panzoom):
+The map is rendered as SVG by D3. Pan/zoom support is done by [panzoom](https://github.com/anvaka/panzoom):
 
 ![zoom in animation](https://raw.githubusercontent.com/anvaka/what-people-google/master/docs/zoom.gif)
 
