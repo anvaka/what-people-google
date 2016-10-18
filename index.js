@@ -4,28 +4,20 @@ var height = window.innerHeight;
 
 var usa = require('./lib/usModel.js');
 var colors = require('./prettyColors.js');
-var getQuestions = require('./lib/getQuestions.js');
+var queries = require('./lib/getQuestions.js');
 var animator = require('./questionAnimator.js')(document.querySelector('.questions-container'));
 var makeOptions = require('./makeOptions.js');
 
 var mapBackgroundColor = '#A3CCFF';
 var stateBackgroundColor = '#F2ECCF';
 
-var questionsDataSet = require('./data/questions.json')
-var dropDownQuestions = Object.keys(questionsDataSet).map(function(key) {
-  return {
-    value: key,
-    text: questionsDataSet[key].display,
-    selected: false
-  };
-});
-
-dropDownQuestions[0].selected = true;
+var dropDownQueries =  queries.listQueries();
+dropDownQueries[0].selected = true;
 
 var questionElement = document.querySelector('.input-question');
-makeOptions(questionElement, dropDownQuestions, onNewQuestionSelected);
+makeOptions(questionElement, dropDownQueries, onNewQuerySelected);
 
-var questions = getQuestions(questionsDataSet['why-is']);
+var query = queries.getQuery('why-is');
 
 var active = d3.select(null);
 var projection = d3.geo.albersUsa()
@@ -64,10 +56,10 @@ scene.append('g')
 
 var text = appendTextLayer();
 
-function onNewQuestionSelected(question) {
+function onNewQuerySelected(queryId) {
     reset();
 
-    questions = getQuestions(questionsDataSet[question]);
+    query = queries.getQuery(queryId);
     text.remove();
     text = appendTextLayer();
 }
@@ -84,7 +76,7 @@ function appendTextLayer() {
       })
       .text(function(d){
         var stateName = usa.getName(d);
-        return questions.getTextByStateName(stateName);
+        return query.getAutoCompleteTextForState(stateName);
       })
       .attr('x', function(d){
           return path.centroid(d)[0];
@@ -112,8 +104,8 @@ function selectState() {
   var color = colors[this.id % colors.length];
   background.transition().style('fill', color);
 
-  var record = questions.getRecord(selectedStateName);
-  selectQuery(record);
+  var record = query.getSearchRecord(selectedStateName);
+  animator.animate(record.suggestions);
 
   function thisState(d) {
     return !notThisState(d);
@@ -122,10 +114,6 @@ function selectState() {
   function notThisState(d) {
     return usa.getName(d) !== selectedStateName;
   }
-}
-
-function selectQuery(record) {
-  animator.animate(record.suggestions);
 }
 
 function reset() {
