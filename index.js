@@ -2,7 +2,9 @@
 //
 // Happy reading :)!
 var loadData = require('./lib/loadData');
-loadData('usa', showMap);
+var queryString = require('./lib/queryString.js')();
+
+loadData(queryString, showMap);
 
 var createMap = require('./view/createMap.js');
 
