@@ -114,7 +114,7 @@ function createMap(mapModel, options) {
   function makeGeoPath() {
     var projection = d3.geo.albersUsa()
       .scale(2100)
-      .translate([765, height / 2 + 225]);
+      .translate([765, 575]);
 
     return d3.geo.path().projection(projection);
   }
