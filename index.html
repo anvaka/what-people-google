@@ -144,7 +144,7 @@ select.back-dropdown {
 .state-name.pennsylvania {
   transform: translateY(-5px);
 }
-.washington {
+.state-name.washington {
   transform: translateY(5px);
 }
 
@@ -163,19 +163,19 @@ h3 {
   color: #444;
   margin: 8px 0;
 }
-  .about {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    padding: 4px 18px;
-    background-color: rgba(255, 255, 255, 0.7);
-    text-decoration: none;
-    display: block;
-    font-size: 18px;
-    width: 300px;
-    text-align: center;
-    color: #2196f3;
-  }
+.about {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 4px 18px;
+  background-color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  display: block;
+  font-size: 18px;
+  width: 300px;
+  text-align: center;
+  color: #2196f3;
+}
 
 @media (max-width: 425px) {
   .intro {
@@ -198,6 +198,7 @@ h3 {
 
   .questions-container {
     background-color: rgba(0, 0, 0, 0.3);
+    pointer-events: initial;
   }
 
   .questions-container.has-children {
