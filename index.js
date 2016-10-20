@@ -6,7 +6,10 @@ var queryString = require('./lib/queryString.js')();
 
 loadData(queryString, showMap);
 
-var createMap = require('./view/createMap.js');
+// TODO: this should be moved to 'load data'
+var createUSAMap = require('./view/createMap.js');
+var createWorldMap = require('./view/createWorldMap.js');
+var createMap = queryString.map === 'world' ? createWorldMap : createUSAMap;
 
 function showMap(mapData, queries) {
   // show "why-is" question by default.
