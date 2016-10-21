@@ -19,7 +19,11 @@ function createMap(mapModel, options) {
   var height = window.innerHeight;
 
   // First we set up the DOM
-  var geoPath = makeGeoPath();
+  var projection = d3.geo.mercator()
+      .scale(699 / Math.PI)
+      .translate([1280 / 2, 699/ 2]);
+
+  var geoPath = d3.geo.path().projection(projection);
   var svg = makeSVGContainer();
   var mapBackground = makeMapBackground();
   var statesOutline = makeStatesOutline();
@@ -27,7 +31,9 @@ function createMap(mapModel, options) {
 
   // Then we make zoomable/panable
   var zoomContainer = statesOutline[0][0];
-  panzoom(zoomContainer);
+  var zoomer = panzoom(zoomContainer);
+
+  centerScene();
 
   var selectedState = d3.select(null);
   var selectStateTimeout; // used to differentiate between pan and select events
@@ -50,6 +56,20 @@ function createMap(mapModel, options) {
 
   // That's it. The public API is over.
   return api;
+
+  function centerScene() {
+    var sceneRect = zoomContainer.getBoundingClientRect();
+    var xRatio = width /sceneRect.width;
+    zoomer.zoomTo(0, 0, xRatio);
+    sceneRect = zoomContainer.getBoundingClientRect();
+    if (sceneRect.top < 0) {
+      var dy = (height - sceneRect.height)/2;
+      if (dy < 0) {
+        dy = 0; // no need to move anything, if map is too large
+      }
+      zoomer.moveBy(0, -sceneRect.top + dy);
+    }
+  }
 
   function reset() {
     selectedState.classed('active', false);
@@ -111,14 +131,6 @@ function createMap(mapModel, options) {
     mapBackground.attr('width', width).attr('height', height)
   }
 
-  function makeGeoPath() {
-    var projection = d3.geo.mercator()
-      .scale(height / Math.PI)
-      .translate([width / 2, height / 2]);
-
-    return d3.geo.path().projection(projection);
-  }
-
   function makeSVGContainer() {
     return d3.select('body').append('svg')
       .attr('class', 'world')
@@ -172,11 +184,13 @@ function createMap(mapModel, options) {
     })
       .attr('x', function(d) {
         var className = cssify(mapModel.getName(d));
-        return geoPath.centroid(d)[0] + getLabelAdjustment('x', className);
+        var adjustment = getLabelAdjustment('x', className);
+        return geoPath.centroid(d)[0] + adjustment;
       })
       .attr('y', function(d) {
         var className = cssify(mapModel.getName(d));
-        return geoPath.centroid(d)[1] + getLabelAdjustment('y', className);
+        var adjustment = getLabelAdjustment('y', className);
+        return geoPath.centroid(d)[1] + adjustment;
       })
       .attr('text-anchor', 'middle');
   }

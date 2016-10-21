@@ -14,7 +14,7 @@
     "url": "https://github.com/anvaka/what-people-google"
   },
   "dependencies": {
-    "panzoom": "^1.2.2"
+    "panzoom": "^1.2.4"
   },
   "devDependencies": {
     "browserify": "^13.1.0"
