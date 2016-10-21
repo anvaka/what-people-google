@@ -2,11 +2,11 @@
 
 /**
  * A view that manages the map.
+ * TODO: combine wiht createWorldMap.js
  */
 
 var mapBackgroundColor = '#A3CCFF';
 var stateBackgroundColor = '#F2ECCF';
-var prettyColors = require('../data/prettyColors.js');
 
 var panzoom = require('panzoom'); // for map zooming and panning
 
@@ -54,12 +54,6 @@ function createMap(mapModel, options) {
   function reset() {
     selectedState.classed('active', false);
     selectedState = d3.select(null);
-
-    mapBackground.transition().style('fill', mapBackgroundColor);
-
-    d3.selectAll('.state').transition().style('opacity', '1');
-    d3.selectAll('.state-name').transition().style('opacity', 1);
-
     options.onStateSelected(null);
   }
 
@@ -180,15 +174,6 @@ function createMap(mapModel, options) {
     selectedState = d3.select(this).classed('active', true);
 
     var selectedStateName = mapModel.getName(this);
-
-    d3.selectAll('.state').filter(notThisState).transition().style('opacity', '0.3');
-    d3.selectAll('.state-name').filter(notThisState).transition().style('opacity', '0.3');
-
-    d3.select(this).style('opacity', 1);
-    d3.selectAll('.state-name').filter(thisState).style('opacity', 1);
-
-    var color = prettyColors[this.id % prettyColors.length];
-    mapBackground.transition().style('fill', color);
 
     options.onStateSelected(selectedStateName);
 

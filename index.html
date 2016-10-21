@@ -27,28 +27,29 @@ body {
 
 .intro {
   position: absolute;
-  left: 20px;
-  pointer-events: none;
+  left: 0;
+  padding: 8px;
+  width: 396px;
+  background: rgba(0, 0, 0, 0.3);
 }
 
-.fade-in {
-  animation-fill-mode: both;
-  animation-name: fadeIn;
-  animation-duration: 1s;
-}
-
-@keyframes fadeIn {
-  from {opacity: 0; }
+.questions-container.has-children {
+    background: white;
+    padding: 0px 18px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2)
 }
 
 .suggestion {
   font-family: 'Open Sans', sans-serif;
-  white-space:nowrap;
+  white-space: nowrap;
   overflow: hidden;
-  color: #333;
+  color: #8C8C8C;
   text-decoration: none;
-  pointer-events: auto;
-  display: table;
+  text-overflow: ellipsis;
+  border-bottom: 1px solid #E6E6E6;
+  height: 38px;
+  padding-top: 6px;
+  display: block;
 }
 
 .suggestion:hover {
@@ -56,9 +57,8 @@ body {
 }
 
 .suggestion b {
-  color: white;
-  text-shadow: 1px 1px 1px rgba(51,51,51,0.8);
-  font-weight: normal;
+  color: #000;
+  font-weight: 500;
 }
 .input-question {
   background: white;
@@ -67,10 +67,9 @@ body {
   align-items: center;
   padding-left: 18px;
   color: #333;
-  box-shadow: 0 2px 4px rgba(0,0,0,.2),0 -1px 0 rgba(0,0,0,.02);
   width: 380px;
   position: relative;
-  pointer-events: auto;
+  border-bottom: 1px solid #E6E6E6;
 }
 
 .input-question .label {
@@ -93,6 +92,7 @@ select.back-dropdown {
   font-family: 'Roboto', sans-serif;
   font-size: 18px;
   fill: #333;
+  pointer-events: none;
 }
 .state-name.delaware,
 .state-name.district-of-columbia {
@@ -155,7 +155,7 @@ select.back-dropdown {
 }
 
 .state.active {
-  fill: #efefef;
+  fill: #6a9591;
 }
 
 .country {
@@ -167,7 +167,7 @@ select.back-dropdown {
 }
 
 .country.active {
-  fill: #efefef;
+  fill: #6a9591;
 }
 
 .country-name {
@@ -178,8 +178,8 @@ select.back-dropdown {
 
 h3 {
   font-weight: normal;
-  color: #444;
-  margin: 8px 0;
+  color: white;
+  margin: 0 0 8px 0;
 }
 
 .about {
@@ -199,7 +199,6 @@ h3 {
 @media (max-width: 425px) {
   .intro {
     left: 0;
-    padding: 0 10px;
     width: 100%;
   }
 
@@ -208,16 +207,6 @@ h3 {
   }
   .about {
     width: 100%;
-  }
-
-  .suggestion {
-    /* TODO: can I remove this important? */
-    font-size: 16px !important;
-  }
-
-  .questions-container {
-    background-color: rgba(0, 0, 0, 0.3);
-    pointer-events: initial;
   }
 
   .questions-container.has-children {

@@ -49,13 +49,9 @@ function createAutoSuggestList(domContainer) {
 /**
  * Creates a single suggestion DOM element inside `parentElement`.
  */
-function suggestionContainer(parentElement, content, index) {
-  var fontSize = px((10 - index) + 18);
-
+function suggestionContainer(parentElement, content) {
   var child = createHtmlElement(content);
-
-  // We delay creation, so that it gives nice reveal effect.
-  var addTimeout = setTimeout(appendChild, index * 100);
+  parentElement.appendChild(child);
 
   return {
     /**
@@ -64,22 +60,14 @@ function suggestionContainer(parentElement, content, index) {
     dispose: dispose,
   }
 
-  function appendChild() {
-    parentElement.appendChild(child);
-    addTimeout = 0;
-  }
-
   function dispose() {
-    if (addTimeout) window.clearTimeout(addTimeout);
-    else parentElement.removeChild(child);
+    parentElement.removeChild(child);
   }
 
   function createHtmlElement(innerHTML) {
     var element = document.createElement('a');
     var classList = element.classList;
     classList.add('suggestion');
-    classList.add('fade-in');
-    element.style.fontSize = fontSize;
 
     element.innerHTML = innerHTML;
     element.setAttribute('href', 'https://www.google.com/#q=' + window.encodeURIComponent(element.innerText));
@@ -87,8 +75,4 @@ function suggestionContainer(parentElement, content, index) {
 
     return element;
   }
-}
-
-function px(value) {
-  return value + 'px';
 }
