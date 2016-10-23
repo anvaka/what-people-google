@@ -13,7 +13,9 @@ var createMap = queryString.map === 'world' ? createWorldMap : createUSAMap;
 
 function showMap(mapData, queries) {
   // show "why-is" question by default.
-  var query = queries.getQuery('why-is');
+  var defaultQuery = 'why-is';
+  var selectedQuery = queryString.q || defaultQuery;
+  var query = queries.getQuery(selectedQuery, defaultQuery);
 
   // construct all UI elements (we don't need any dom-view layer library, it's a simple project)
 
@@ -62,11 +64,6 @@ function showMap(mapData, queries) {
   // Since Google Autocomplete API is not officially supported, we render only
   // set of pre-computed queries.
   function getPrecomputedQueries() {
-    var precomputedQueries = queries.listQueries();
-
-    // TODO: this side effect needs to go. Ideally we want to read selected query from
-    // the query string.
-    precomputedQueries[0].selected = true;
-    return precomputedQueries;
+    return queries.listQueries(selectedQuery);
   }
 }
