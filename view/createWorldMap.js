@@ -178,14 +178,14 @@ function createMap(mapModel, options) {
         var className = cssify(mapModel.getName(d));
         return 'country-name ' + className;
       })
-      .text(function(d) {
+      .html(function(d) {
         var stateName = mapModel.getName(d);
         return options.getLabel(stateName);
       })
-    .attr('font-size', function(d) {
-      var className = cssify(mapModel.getName(d));
-      return getFontSize(className);
-    })
+      .attr('font-size', function(d) {
+        var className = cssify(mapModel.getName(d));
+        return getFontSize(className);
+      })
       .attr('x', function(d) {
         var className = cssify(mapModel.getName(d));
         var adjustment = getLabelAdjustment('x', className);

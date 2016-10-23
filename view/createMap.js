@@ -160,7 +160,7 @@ function createMap(mapModel, options) {
       .attr('class', function(d) {
         return 'state-name ' + cssify(mapModel.getName(d));
       })
-      .text(function(d) {
+      .html(function(d) {
         var stateName = mapModel.getName(d);
         return options.getLabel(stateName);
       })
