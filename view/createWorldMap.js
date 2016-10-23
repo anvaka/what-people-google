@@ -91,7 +91,7 @@ function createMap(mapModel, options) {
   function listenToEvents() {
     window.addEventListener('resize', onWindowResize, false);
 
-    mapBackground.on('click', reset).on('touchstart', reset)
+    mapBackground.on('mouseup', reset).on('touchstart', reset)
 
     statesOutline.selectAll('path')
       .on('mouseup', scheduleSelectState)

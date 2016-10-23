@@ -10,12 +10,14 @@ loadData(queryString, showMap);
 var createUSAMap = require('./view/createMap.js');
 var createWorldMap = require('./view/createWorldMap.js');
 var createMap = queryString.map === 'world' ? createWorldMap : createUSAMap;
+var createSideMenu = require('./view/createSideMenu.js');
 
 function showMap(mapData, queries) {
   // show "why-is" question by default.
   var defaultQuery = 'why-is';
   var selectedQuery = queryString.q || defaultQuery;
   var query = queries.getQuery(selectedQuery, defaultQuery);
+  createSideMenu(document.body);
 
   // construct all UI elements (we don't need any dom-view layer library, it's a simple project)
 
