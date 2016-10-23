@@ -158,6 +158,10 @@ function createMap(mapModel, options) {
       .attr('d', geoPath)
       .attr('class', 'country')
       .attr('fill', stateBackgroundColor)
+      .attr('stroke', '#999')
+      .attr('stroke-width', '0.5px')
+      .attr('stroke-dasharray', 1)
+      .attr('stroke-linejoin', 'round')
       .attr('id', mapModel.getName);
 
     return statesOutline;
@@ -233,6 +237,9 @@ function getLabelStyles() {
     russia: {
       fontSize: 32,
       y: 30
+    },
+    australia: {
+      fontSize: 18,
     },
     france: {
       x: 14,

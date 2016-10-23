@@ -139,6 +139,10 @@ function createMap(mapModel, options) {
       .attr('d', geoPath)
       .attr('class', 'state')
       .attr('fill', stateBackgroundColor)
+      .attr('stroke', '#999')
+      .attr('stroke-width', '0.5px')
+      .attr('stroke-dasharray', 1)
+      .attr('stroke-linejoin', 'round')
       .attr('id', function(d) {
         return d.id;
       });
