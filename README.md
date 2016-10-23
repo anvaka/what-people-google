@@ -1,4 +1,4 @@
-# [what-people-google](https://what-people-google.anvaka.com/)
+# [what-people-google](https://what-people-google.anvaka.com/?map=world)
 
 Visualization of what people google:
 
