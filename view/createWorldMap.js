@@ -1,4 +1,4 @@
-/* globals d3 topojson */
+/* globals d3 */
 
 /**
  * A view that manages the map.
@@ -270,6 +270,11 @@ function getLabelStyles() {
       y: -4
     },
 
+    'united-states': {
+      x: 70,
+      y: 70,
+      fontSize: 26
+    },
     'united-states-of-america': {
       x: 70,
       y: 70,
