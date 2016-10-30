@@ -8,6 +8,7 @@
 var mapBackgroundColor = '#A3CCFF';
 var stateBackgroundColor = '#F2ECCF';
 
+var createPolyText = require('../lib/poly-text/index.js');
 var panzoom = require('panzoom'); // for map zooming and panning
 
 module.exports = createMap;
@@ -23,10 +24,12 @@ function createMap(mapModel, options) {
   var svg = makeSVGContainer();
   var mapBackground = makeMapBackground();
   var statesOutline = makeStatesOutline();
+
+  var zoomContainer = statesOutline[0][0];
+  var polyText = createPolyText(zoomContainer);
   var textLayer = makeTextLayer();
 
   // Then we make zoomable/panable
-  var zoomContainer = statesOutline[0][0];
   panzoom(zoomContainer);
 
   var selectedState = d3.select(null);
@@ -151,24 +154,30 @@ function createMap(mapModel, options) {
   }
 
   function makeTextLayer() {
-    return statesOutline.append('g')
-      .attr('class', 'states-names')
-      .selectAll('text')
-      .data(mapModel.paths)
-      .enter()
-      .append('svg:text')
-      .attr('class', function(d) {
-        return 'state-name ' + cssify(mapModel.getName(d));
-      })
-      .html(function(d) {
-        var stateName = mapModel.getName(d);
-        return options.getLabel(stateName);
-      })
-      .attr('x', function(d) { return geoPath.centroid(d)[0]; })
-      .attr('y', function(d) { return geoPath.centroid(d)[1]; })
-      .attr('text-anchor', 'middle');
-  }
+    var container = statesOutline.append('g')
+      .attr('class', 'states-names');
 
+    d3.selectAll('.state').each(function(d) {
+      var getTextLayout = polyText.getTextLayoutForPath(this);
+
+      var stateName = mapModel.getName(d);
+      var text = options.getLabel(stateName);
+
+      var textLayout = getTextLayout(text);
+      if (!textLayout) return;
+
+      textLayout.forEach(function(line) {
+        container.append('svg:text')
+          .attr({
+            'font-size': line.fontSize,
+            x: line.x,
+            y: line.y
+          }).text(line.text);
+      });
+    });
+
+    return container;
+  }
 
   function selectState() {
     selectStateTimeout = 0;
@@ -188,10 +197,6 @@ function createMap(mapModel, options) {
     function notThisState(d) {
       return mapModel.getName(d) !== selectedStateName;
     }
-  }
-
-  function cssify(str) {
-    return str.toLowerCase().replace(/ /g, '-')
   }
 }
 
