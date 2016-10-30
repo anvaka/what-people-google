@@ -9,7 +9,7 @@ loadData(queryString, showMap);
 // TODO: this should be moved to 'load data'
 var createUSAMap = require('./view/createMap.js');
 var createWorldMap = require('./view/createWorldMap.js');
-var createMap = queryString.map === 'world' ? createWorldMap : createUSAMap;
+var createMap = queryString.map === 'usa' ? createUSAMap : createWorldMap;
 var createSideMenu = require('./view/createSideMenu.js');
 
 function showMap(mapData, queries) {

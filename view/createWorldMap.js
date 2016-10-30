@@ -9,6 +9,7 @@ var stateBackgroundColor = '#F2ECCF';
 
 var createPolyText = require('../lib/poly-text/index.js');
 var panzoom = require('panzoom'); // for map zooming and panning
+var countryColors = require('./getCountryColor.js')();
 
 module.exports = createMap;
 
@@ -159,11 +160,14 @@ function createMap(mapModel, options) {
       .append('path')
       .attr('d', geoPath)
       .attr('class', 'country')
-      .attr('fill', stateBackgroundColor)
-      .attr('stroke', '#999')
-      .attr('stroke-width', '0.5px')
-      .attr('stroke-dasharray', 1)
-      .attr('stroke-linejoin', 'round')
+      .attr('fill', function(d) {
+        var countryName = mapModel.getName(d);
+        var color = countryColors[countryName]
+        return color || stateBackgroundColor;
+      })
+      .attr('stroke', '#333')
+      .attr('stroke-width', '0.3')
+      .attr('vector-effect', 'non-scaling-stroke')
       .attr('id', mapModel.getName);
 
     return statesOutline;
