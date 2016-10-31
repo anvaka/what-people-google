@@ -2,7 +2,7 @@
 
 /**
  * A view that manages the map.
- * TODO: combine wiht createWorldMap.js
+ * TODO: combine wiht createWorldMap.js. Really.
  */
 
 var mapBackgroundColor = '#A3CCFF';

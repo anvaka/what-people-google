@@ -8,6 +8,7 @@ var mapBackgroundColor = '#A3CCFF';
 var stateBackgroundColor = '#F2ECCF';
 
 var createPolyText = require('../lib/poly-text/index.js');
+var makeCountryLabels = require('../lib/containerLabels.js');
 var panzoom = require('panzoom'); // for map zooming and panning
 var countryColors = require('./getCountryColor.js')();
 
@@ -29,8 +30,6 @@ function createMap(mapModel, options) {
   var mapBackground = makeMapBackground();
   var statesOutline = makeStatesOutline();
   var zoomContainer = statesOutline[0][0];
-
-  var polyText = createPolyText(zoomContainer);
   var textLayer = makeTextLayer();
 
   // Then we make zoomable/panable
@@ -41,6 +40,7 @@ function createMap(mapModel, options) {
   var selectedState = d3.select(null);
   var selectStateTimeout; // used to differentiate between pan and select events
   var ignoreNextStateSelect;
+  var countryLabels;
 
   // and then make it respond to user events.
   listenToEvents();
@@ -62,7 +62,7 @@ function createMap(mapModel, options) {
 
   function centerScene() {
     var sceneRect = zoomContainer.getBoundingClientRect();
-    var xRatio = width /sceneRect.width;
+    var xRatio = width / sceneRect.width;
     zoomer.zoomTo(0, 0, xRatio);
     sceneRect = zoomContainer.getBoundingClientRect();
     if (sceneRect.top < 0) {
@@ -170,29 +170,48 @@ function createMap(mapModel, options) {
       .attr('vector-effect', 'non-scaling-stroke')
       .attr('id', mapModel.getName);
 
+    var idToPath = makeIdToPath(d3.selectAll('.country'));
+
+    var polyText = createPolyText(statesOutline[0][0]);
+    countryLabels = makeCountryLabels(idToPath, polyText);
+
     return statesOutline;
   }
 
+  function makeIdToPath(paths) {
+    var idToPath = [];
+
+    paths.each(function(d) {
+      idToPath.push({
+        id: mapModel.getName(d),
+        path: this.getAttribute('d')
+      });
+    })
+
+    return idToPath;
+  }
+
   function makeTextLayer() {
-    var container = statesOutline.append('g')
-      .attr('class', 'states-names');
+    var container = statesOutline.append('g').attr('class', 'states-names');
 
     d3.selectAll('.country').each(function(d) {
-      var getTextLayout = polyText.getTextLayoutForPath(this);
-
       var stateName = mapModel.getName(d);
       var text = options.getLabel(stateName);
-      var textLayout = getTextLayout(text);
-      if (!textLayout) return;
 
-      textLayout.forEach(function(line) {
-        container.append('svg:text')
-          .attr({
-            'font-size': line.fontSize,
-            x: line.x,
-            y: line.y
-          }).text(line.text);
-      });
+      countryLabels.computeLayout(stateName, text, renderLayout)
+
+      // var textLayout = getTextLayout(text);
+      // if (!textLayout) return;
+      function renderLayout(textLayout) {
+        textLayout.forEach(function(line) {
+          container.append('svg:text')
+            .attr({
+              'font-size': line.fontSize,
+              x: line.x,
+              y: line.y
+            }).text(line.text);
+        });
+      }
     });
 
     return container;
