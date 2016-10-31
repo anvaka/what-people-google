@@ -301,6 +301,14 @@ a:hover, .input-question:hover, .suggestion:hover b  {
   height: 1px;
 }
 
+.tooltip {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #333;
+  visibility: hidden;
+  padding: 10px 6px;
+  pointer-events: none;
+}
     </style>
   </head>
 
@@ -332,6 +340,7 @@ a:hover, .input-question:hover, .suggestion:hover b  {
         <a href='https://github.com/anvaka/what-people-google' class='menu-item'>Source Code</a>
       </div>
     </div>
+    <div class='tooltip'></div>
     <a href='https://github.com/anvaka/what-people-google' class='about'>About...</a>
     <script src="bundle.js"></script>
 <script>

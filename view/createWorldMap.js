@@ -7,9 +7,11 @@
 var mapBackgroundColor = '#A3CCFF';
 var stateBackgroundColor = '#F2ECCF';
 
+var panzoom = require('panzoom'); // for map zooming and panning
+
+var makeTooltip = require('./tooltip.js');
 var createPolyText = require('../lib/poly-text/index.js');
 var makeCountryLabels = require('../lib/containerLabels.js');
-var panzoom = require('panzoom'); // for map zooming and panning
 var countryColors = require('./getCountryColor.js')();
 
 module.exports = createMap;
@@ -31,6 +33,7 @@ function createMap(mapModel, options) {
   var statesOutline = makeStatesOutline();
   var zoomContainer = statesOutline[0][0];
   var textLayer = makeTextLayer();
+  var tooltip = makeTooltip(document.querySelector('.tooltip'));
 
   // Then we make zoomable/panable
   var zoomer = panzoom(zoomContainer);
@@ -97,10 +100,22 @@ function createMap(mapModel, options) {
     mapBackground.on('mouseup', reset).on('touchstart', reset)
 
     statesOutline.selectAll('path')
+      .on('mousemove', showTooltip)
+      .on('mouseleave', hideTooltip)
       .on('mouseup', scheduleSelectState)
       .on('touchend', scheduleSelectState);
 
     zoomContainer.addEventListener('panstart', cancelSelectState);
+  }
+
+  function showTooltip(d) {
+    var stateName = mapModel.getName(d);
+    var text = options.getLabel(stateName);
+    tooltip.show(text, d3.event.clientX, d3.event.clientY);
+  }
+
+  function hideTooltip() {
+    tooltip.hide();
   }
 
   function cancelSelectState() {
