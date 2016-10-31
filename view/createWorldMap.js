@@ -182,9 +182,10 @@ function createMap(mapModel, options) {
     var idToPath = [];
 
     paths.each(function(d) {
+      var countryId = mapModel.getName(d);
       idToPath.push({
-        id: mapModel.getName(d),
-        path: this.getAttribute('d')
+        id: countryId,
+        path: getPathOverride(countryId) || this.getAttribute('d')
       });
     })
 
@@ -204,6 +205,7 @@ function createMap(mapModel, options) {
       // if (!textLayout) return;
       function renderLayout(textLayout) {
         textLayout.forEach(function(line) {
+          // if (line.fontSize < 2) return;
           container.append('svg:text')
             .attr({
               'font-size': line.fontSize,
@@ -232,3 +234,9 @@ function createMap(mapModel, options) {
 }
 
 function px(x) { return x + 'px'; }
+
+function getPathOverride(countryId) {
+  if (countryId === 'Indonesia') {
+    return 'M1010,348L1187,348L1187,380L1010,380Z';
+  }
+}
