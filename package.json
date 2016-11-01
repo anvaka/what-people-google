@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "browserify index.js > bundle.js"
+    "start": "browserify index.js > dist/bundle.js",
+    "watch": "watchify index.js -o dist/bundle.js -v",
+    "server": "http-server -c-1",
+    "dev": "concurrently --kill-others \"npm run watch\" \"npm run server\""
   },
   "author": "Andrei Kashcha",
   "license": "MIT",
@@ -14,9 +17,11 @@
     "url": "https://github.com/anvaka/what-people-google"
   },
   "dependencies": {
-    "panzoom": "^1.2.4"
+    "panzoom": "^1.3.1"
   },
   "devDependencies": {
-    "browserify": "^13.1.0"
+    "browserify": "^13.1.0",
+    "concurrently": "^3.1.0",
+    "watchify": "^3.7.0"
   }
 }

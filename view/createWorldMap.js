@@ -31,7 +31,7 @@ function createMap(mapModel, options) {
   var svg = makeSVGContainer();
   var mapBackground = makeMapBackground();
   var statesOutline = makeStatesOutline();
-  var zoomContainer = statesOutline[0][0];
+  var zoomContainer = statesOutline.node();
   var textLayer = makeTextLayer();
   var tooltip = makeTooltip(document.querySelector('.tooltip'));
 
@@ -220,7 +220,7 @@ function createMap(mapModel, options) {
       // if (!textLayout) return;
       function renderLayout(textLayout) {
         textLayout.forEach(function(line) {
-          // if (line.fontSize < 2) return;
+          // if (line.fontSize < 20) return;
           container.append('svg:text')
             .attr({
               'font-size': line.fontSize,
