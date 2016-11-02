@@ -106,12 +106,14 @@ function createMap(mapModel, options) {
       .on('touchend', scheduleSelectState);
 
     zoomContainer.addEventListener('panstart', cancelSelectState);
+    zoomContainer.addEventListener('zoom', cancelSelectState);
+    zoomContainer.addEventListener('pan', cancelSelectState);
   }
 
   function showTooltip(d) {
     var stateName = mapModel.getName(d);
     var text = options.getLabel(stateName);
-    tooltip.show(text, d3.event.clientX, d3.event.clientY);
+    if (text) tooltip.show(text, d3.event.clientX, d3.event.clientY);
   }
 
   function hideTooltip() {
@@ -122,18 +124,12 @@ function createMap(mapModel, options) {
     if (selectStateTimeout) {
       window.clearTimeout(selectStateTimeout);
       selectStateTimeout = 0;
-    } else {
-      // we fired firest, make sure next selectState is ignored.
-      ignoreNextStateSelect = true;
     }
   }
 
   function scheduleSelectState() {
-    if (ignoreNextStateSelect) {
-      ignoreNextStateSelect = false;
-      return;
-    }
-    selectStateTimeout = setTimeout(selectState.bind(this), 30);
+    cancelSelectState();
+    selectStateTimeout = setTimeout(selectState.bind(this), 200);
   }
 
   function onWindowResize() {
@@ -220,12 +216,20 @@ function createMap(mapModel, options) {
       // if (!textLayout) return;
       function renderLayout(textLayout) {
         textLayout.forEach(function(line) {
-          // if (line.fontSize < 20) return;
+          // if (line.fontSize < 5) {
+          //   container.append('path')
+          //     .attr({
+          //       d: 'M' + line.x + ',' + line.y + 'L' + (line.x + line.width)+ ',' + line.y,
+          //       'stroke-width': Math.max(0.1, line.fontSize * 0.2),
+          //       stroke: 'black'
+          //     });
+          //   return;
+          // }
           container.append('svg:text')
             .attr({
               'font-size': line.fontSize,
               x: line.x,
-              y: line.y
+              y: line.y,
             }).text(line.text);
         });
       }
