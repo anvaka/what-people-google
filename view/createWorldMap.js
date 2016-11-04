@@ -104,9 +104,9 @@ function createMap(mapModel, options) {
 
     statesOutline.selectAll('path')
       .on('mousemove', showTooltip)
-      .on('mouseleave', hideTooltip)
-      .on('mouseup', scheduleSelectState)
-      .on('touchend', scheduleSelectState);
+      .on('mouseleave', hideTooltip);
+      // .on('mouseup', scheduleSelectState)
+      // .on('touchend', scheduleSelectState);
 
     zoomContainer.addEventListener('panstart', cancelSelectState);
     zoomContainer.addEventListener('zoom', cancelSelectState);
