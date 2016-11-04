@@ -12,6 +12,7 @@ var panzoom = require('panzoom'); // for map zooming and panning
 var makeTooltip = require('./tooltip.js');
 var createPolyText = require('../lib/poly-text/index.js');
 var makeCountryLabels = require('../lib/containerLabels.js');
+var makeVirtualLabels = require('./virtualLabels.js');
 var countryColors = require('./getCountryColor.js')();
 
 module.exports = createMap;
@@ -21,6 +22,7 @@ function createMap(mapModel, options) {
 
   var width = window.innerWidth;
   var height = window.innerHeight;
+  var virtualLabels
 
   // First we set up the DOM
   var projection = d3.geo.mercator()
@@ -32,7 +34,7 @@ function createMap(mapModel, options) {
   var mapBackground = makeMapBackground();
   var statesOutline = makeStatesOutline();
   var zoomContainer = statesOutline.node();
-  var textLayer = makeTextLayer();
+  var textLayer;
   var tooltip = makeTooltip(document.querySelector('.tooltip'));
 
   // Then we make zoomable/panable
@@ -42,11 +44,11 @@ function createMap(mapModel, options) {
 
   var selectedState = d3.select(null);
   var selectStateTimeout; // used to differentiate between pan and select events
-  var ignoreNextStateSelect;
   var countryLabels;
 
   // and then make it respond to user events.
   listenToEvents();
+  setTimeout(refreshLabels, 0);
 
   var api = {
     /**
@@ -90,7 +92,8 @@ function createMap(mapModel, options) {
   }
 
   function refreshLabels() {
-    textLayer.remove();
+    if (textLayer) textLayer.remove();
+
     textLayer = makeTextLayer();
   }
 
@@ -169,17 +172,19 @@ function createMap(mapModel, options) {
       .data(mapModel.paths)
       .enter()
       .append('path')
-      .attr('d', geoPath)
-      .attr('class', 'country')
-      .attr('fill', function(d) {
-        var countryName = mapModel.getName(d);
-        var color = countryColors[countryName]
-        return color || stateBackgroundColor;
+      .attr({
+        fill: function(d) {
+          var countryName = mapModel.getName(d);
+          var color = countryColors[countryName]
+          return color || stateBackgroundColor;
+        },
+        d: geoPath,
+        class: 'country',
+        stroke: '#333',
+        'stroke-width': '0.3',
+        'vector-effect': 'non-scaling-stroke',
+        'id': mapModel.getName
       })
-      .attr('stroke', '#333')
-      .attr('stroke-width', '0.3')
-      .attr('vector-effect', 'non-scaling-stroke')
-      .attr('id', mapModel.getName);
 
     var idToPath = makeIdToPath(d3.selectAll('.country'));
 
@@ -205,6 +210,13 @@ function createMap(mapModel, options) {
 
   function makeTextLayer() {
     var container = statesOutline.append('g').attr('class', 'states-names');
+    if (virtualLabels) {
+      virtualLabels.dispose()
+    }
+
+    virtualLabels = makeVirtualLabels(container, function() {
+      if (zoomer) return zoomer.getTransform()
+    });
 
     d3.selectAll('.country').each(function(d) {
       var stateName = mapModel.getName(d);
@@ -216,22 +228,8 @@ function createMap(mapModel, options) {
       // if (!textLayout) return;
       function renderLayout(textLayout) {
         textLayout.forEach(function(line) {
-          // if (line.fontSize < 5) {
-          //   container.append('path')
-          //     .attr({
-          //       d: 'M' + line.x + ',' + line.y + 'L' + (line.x + line.width)+ ',' + line.y,
-          //       'stroke-width': Math.max(0.1, line.fontSize * 0.2),
-          //       stroke: 'black'
-          //     });
-          //   return;
-          // }
-          container.append('svg:text')
-            .attr({
-              'font-size': line.fontSize,
-              x: line.x,
-              y: line.y,
-            }).text(line.text);
-        });
+          virtualLabels.add(line)
+        })
       }
     });
 
