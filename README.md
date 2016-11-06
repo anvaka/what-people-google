@@ -2,7 +2,7 @@
 
 Visualization of what people google:
 
-[![country name is not...](https://raw.githubusercontent.com/anvaka/what-people-google/master/docs/is_not.png)](https://what-people-google.anvaka.com/?map=world)
+[![country name is not...](https://raw.githubusercontent.com/anvaka/what-people-google/master/docs/why_is.png)](https://what-people-google.anvaka.com/?map=world)
 
 For each country (or state) it renders top Google autocomplete results as a map.
 
