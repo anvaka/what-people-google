@@ -26,7 +26,7 @@ function createMap(mapModel, options) {
 
   // First we set up the DOM
   var projection = d3.geo.mercator()
-      .scale(699 / Math.PI)
+      .scale(150)
       .translate([1280 / 2, 699/ 2]);
 
   var geoPath = d3.geo.path().projection(projection);
@@ -253,7 +253,7 @@ function createMap(mapModel, options) {
 function px(x) { return x + 'px'; }
 
 function getPathOverride(countryId) {
-  if (countryId === 'Indonesia') {
-    return 'M1010,348L1187,348L1187,380L1010,380Z';
-  }
+  // if (countryId === 'Indonesia') {
+  //   return 'M1010,348L1187,348L1187,380L1010,380Z';
+  // }
 }
