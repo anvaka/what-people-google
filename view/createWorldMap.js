@@ -40,6 +40,7 @@ function createMap(mapModel, options) {
   // Then we make zoomable/panable
   var zoomer = panzoom(zoomContainer, {
     bounds: true,
+    boundsPaddding: 0.4,
     maxZoom: 40,
     minZoom: 0.75
   });
