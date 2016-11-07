@@ -30,11 +30,14 @@ function createMap(mapModel, options) {
   var textLayer = makeTextLayer();
 
   // Then we make zoomable/panable
-  panzoom(zoomContainer, {
+  var zoomer = panzoom(zoomContainer, {
     bounds: true,
-    minZoom: 0.75,
-    maxZoom: 30
+    boundsPaddding: 0.4,
+    maxZoom: 30,
+    minZoom: 0.05
   });
+
+  centerScene();
 
   var selectedState = d3.select(null);
   var selectStateTimeout; // used to differentiate between pan and select events
@@ -57,6 +60,41 @@ function createMap(mapModel, options) {
 
   // That's it. The public API is over.
   return api;
+
+
+  function centerScene() {
+    var sceneRect = zoomContainer.getBBox();
+    var targetRect = getLargestRectInTheMiddleOfTheScreen();
+    zoomer.moveBy(-sceneRect.x, -sceneRect.y)
+    var maxSide = Math.max(sceneRect.width, sceneRect.height);
+    var scale = targetRect.width/maxSide;
+
+    var dx = 0;
+    var dy = 0;
+
+    if (sceneRect.width < sceneRect.height){
+      dx = sceneRect.width * scale * 0.5;
+    } else {
+      dy = sceneRect.height * scale * 0.5;
+    }
+
+    zoomer.zoomAbs(0, 0, scale)
+    zoomer.moveBy(targetRect.left + dx, targetRect.top + dy)
+  }
+
+  function getLargestRectInTheMiddleOfTheScreen() {
+    return (width < height) ? {
+        left: 0,
+        top: (height - width)/2,
+        width: width,
+        height: width
+      } : {
+        left: (width - height)/2,
+        top: 0,
+        width: height,
+        height: height
+      }
+  }
 
   function reset() {
     selectedState.classed('active', false);

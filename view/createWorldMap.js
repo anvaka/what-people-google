@@ -42,7 +42,7 @@ function createMap(mapModel, options) {
     bounds: true,
     boundsPaddding: 0.4,
     maxZoom: 40,
-    minZoom: 0.75
+    minZoom: 0.05
   });
 
   centerScene();
@@ -71,17 +71,34 @@ function createMap(mapModel, options) {
   return api;
 
   function centerScene() {
-    var sceneRect = zoomContainer.getBoundingClientRect();
-    var xRatio = width / sceneRect.width;
-    zoomer.zoomTo(0, 0, xRatio);
-    sceneRect = zoomContainer.getBoundingClientRect();
-    if (sceneRect.top < 0) {
-      var dy = (height - sceneRect.height)/2;
-      if (dy < 0) {
-        dy = 0; // no need to move anything, if map is too large
-      }
-      zoomer.moveBy(0, -sceneRect.top + dy);
+    var sceneRect = zoomContainer.getBBox();
+    var targetRect = getLargestRectInTheMiddleOfTheScreen();
+    zoomer.moveBy(-sceneRect.x, -sceneRect.y)
+    var maxSide = Math.max(sceneRect.width, sceneRect.height);
+    var scale = targetRect.width/maxSide;
+
+    var dx = 0;
+    var dy = 0;
+
+    if (sceneRect.width < sceneRect.height){
+      dx = sceneRect.width * scale * 0.5;
     }
+    zoomer.zoomAbs(0, 0, scale)
+    zoomer.moveBy(targetRect.left + dx, targetRect.top + dy)
+  }
+
+  function getLargestRectInTheMiddleOfTheScreen() {
+    return (width < height) ? {
+        left: 0,
+        top: (height - width)/2,
+        width: width,
+        height: width
+      } : {
+        left: (width - height)/2,
+        top: 0,
+        width: height,
+        height: height
+      }
   }
 
   function reset() {
