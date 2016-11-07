@@ -30,7 +30,11 @@ function createMap(mapModel, options) {
   var textLayer = makeTextLayer();
 
   // Then we make zoomable/panable
-  panzoom(zoomContainer);
+  panzoom(zoomContainer, {
+    bounds: true,
+    minZoom: 0.75,
+    maxZoom: 30
+  });
 
   var selectedState = d3.select(null);
   var selectStateTimeout; // used to differentiate between pan and select events

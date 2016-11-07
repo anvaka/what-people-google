@@ -38,7 +38,11 @@ function createMap(mapModel, options) {
   var tooltip = makeTooltip(document.querySelector('.tooltip'));
 
   // Then we make zoomable/panable
-  var zoomer = panzoom(zoomContainer);
+  var zoomer = panzoom(zoomContainer, {
+    bounds: true,
+    maxZoom: 40,
+    minZoom: 0.75
+  });
 
   centerScene();
 
