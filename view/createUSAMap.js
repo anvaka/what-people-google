@@ -34,7 +34,8 @@ function createMap(mapModel, options) {
     bounds: true,
     boundsPaddding: 0.4,
     maxZoom: 30,
-    minZoom: 0.05
+    minZoom: 0.05,
+    zoomDoubleClickSpeed: 4, // 4x zoom on double tap
   });
 
   centerScene();
