@@ -71,34 +71,16 @@ function createMap(mapModel, options) {
   return api;
 
   function centerScene() {
-    var sceneRect = zoomContainer.getBBox();
-    var targetRect = getLargestRectInTheMiddleOfTheScreen();
+    var sceneRect = zoomContainer.getBBox()
     zoomer.moveBy(-sceneRect.x, -sceneRect.y)
-    var maxSide = Math.max(sceneRect.width, sceneRect.height);
-    var scale = targetRect.width/maxSide;
 
-    var dx = 0;
-    var dy = 0;
+    var scale = Math.min(width, height) / Math.max(sceneRect.width, sceneRect.height)
 
-    if (sceneRect.width < sceneRect.height){
-      dx = sceneRect.width * scale * 0.5;
-    }
+    var dx = (width - sceneRect.width * scale) / 2;
+    var dy = (height - sceneRect.height * scale) / 2;
+
     zoomer.zoomAbs(0, 0, scale)
-    zoomer.moveBy(targetRect.left + dx, targetRect.top + dy)
-  }
-
-  function getLargestRectInTheMiddleOfTheScreen() {
-    return (width < height) ? {
-        left: 0,
-        top: (height - width)/2,
-        width: width,
-        height: width
-      } : {
-        left: (width - height)/2,
-        top: 0,
-        width: height,
-        height: height
-      }
+    zoomer.moveBy(dx, dy)
   }
 
   function reset() {
