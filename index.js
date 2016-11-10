@@ -1,7 +1,7 @@
 // This is the main entry point to the site. I hope you enjoy reading and improving this code!
 //
 // Happy reading :)!
-var loadData = require('./lib/loadData');
+var loadData = require('./lib/loadData.js');
 var queryString = require('./lib/queryString.js')();
 
 loadData(queryString, showMap);
