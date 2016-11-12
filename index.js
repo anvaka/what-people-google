@@ -2,20 +2,34 @@
 //
 // Happy reading :)!
 var loadData = require('./lib/loadData.js');
-var queryString = require('./lib/queryString.js')();
+var createSideMenu = require('./view/createSideMenu.js');
+var queryState = require('./lib/queryString.js')();
 
-loadData(queryString, showMap);
+var currentMapName = queryState.getValue('map') || 'world';
+var currentMap;
+
+loadData(queryState, showMap);
+
+queryState.on('changed', updateCurrentMap);
 
 // TODO: this should be moved to 'load data'
-var createUSAMap = require('./view/createUSAMap.js');
-var createWorldMap = require('./view/createWorldMap.js');
-var createMap = queryString.map === 'usa' ? createUSAMap : createWorldMap;
-var createSideMenu = require('./view/createSideMenu.js');
+var mapNameToViewFunction = {
+  world: require('./view/createWorldMap.js'),
+  usa: require('./view/createUSAMap.js')
+}
+
+function updateCurrentMap(queryString) {
+  if (currentMapName !== queryString.map) {
+    currentMap.unload();
+    currentMapName = queryString.map;
+    loadData(queryState, showMap);
+  }
+}
 
 function showMap(mapData, queries) {
   // show "why-is" question by default.
   var defaultQuery = 'why-is';
-  var selectedQuery = queryString.q || defaultQuery;
+  var selectedQuery = queryState.getValue('q') || defaultQuery;
   var query = queries.getQuery(selectedQuery, defaultQuery);
   createSideMenu(document.body);
 
@@ -32,7 +46,7 @@ function showMap(mapData, queries) {
   );
 
   // This component renders map
-  var map = createMap(mapData, {
+  currentMap = mapNameToViewFunction[currentMapName](mapData, {
     // method called to render a label on top of a state.
     getLabel: function(stateName) {
       return query.getAutoCompleteTextForState(stateName);
@@ -51,11 +65,12 @@ function showMap(mapData, queries) {
   // this is called when user clicks on a different question.
   function onNewQuerySelected(queryId) {
     // Let's clean everything that was selected before
-    map.reset();
+    currentMap.reset();
+    queryState.setValue('q', queryId);
 
     // update data base and re-render labels.
     query = queries.getQuery(queryId);
-    map.refreshLabels();
+    currentMap.refreshLabels();
   }
 
   // just a shortcut for `document.querySelector()`.

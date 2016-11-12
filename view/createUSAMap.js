@@ -56,12 +56,20 @@ function createMap(mapModel, options) {
     /**
      * Re-reads all labels from `options.getLabel()`
      */
-    refreshLabels: refreshLabels
+    refreshLabels: refreshLabels,
+
+    unload: unload
   }
 
   // That's it. The public API is over.
   return api;
 
+
+  function unload() {
+    zoomer.dispose();
+    releaseEvents();
+    svg.remove();
+  }
 
   function centerScene() {
     var sceneRect = zoomContainer.getBBox()
@@ -97,6 +105,11 @@ function createMap(mapModel, options) {
       .on('touchend', scheduleSelectState);
 
     zoomContainer.addEventListener('panstart', cancelSelectState);
+  }
+
+  function releaseEvents() {
+    window.removeEventListener('resize', onWindowResize, false);
+    zoomContainer.removeEventListener('panstart', cancelSelectState);
   }
 
   function cancelSelectState() {

@@ -65,11 +65,27 @@ function createMap(mapModel, options) {
     /**
      * Re-reads all labels from `options.getLabel()`
      */
-    refreshLabels: refreshLabels
+    refreshLabels: refreshLabels,
+
+    /**
+     * Removes itself from the document
+     */
+    unload: unload
   }
 
   // That's it. The public API is over.
   return api;
+
+  function unload() {
+    tooltip.hide();
+    zoomer.dispose();
+    releaseEvents();
+
+    if (virtualLabels) {
+      virtualLabels.dispose()
+    }
+    svg.remove();
+  }
 
   function centerScene() {
     var sceneRect = zoomContainer.getBBox()
@@ -88,11 +104,6 @@ function createMap(mapModel, options) {
     selectedState.classed('active', false);
     selectedState = d3.select(null);
 
-    mapBackground.transition().style('fill', mapBackgroundColor);
-
-    d3.selectAll('.country').transition().style('opacity', '1');
-    d3.selectAll('.country-name').transition().style('opacity', 1);
-
     options.onStateSelected(null);
   }
 
@@ -110,12 +121,17 @@ function createMap(mapModel, options) {
     statesOutline.selectAll('path')
       .on('mousemove', showTooltip)
       .on('mouseleave', hideTooltip);
-      // .on('mouseup', scheduleSelectState)
-      // .on('touchend', scheduleSelectState);
 
     zoomContainer.addEventListener('panstart', cancelSelectState);
     zoomContainer.addEventListener('zoom', cancelSelectState);
     zoomContainer.addEventListener('pan', cancelSelectState);
+  }
+
+  function releaseEvents() {
+    window.removeEventListener('resize', onWindowResize, false);
+    zoomContainer.removeEventListener('panstart', cancelSelectState);
+    zoomContainer.removeEventListener('zoom', cancelSelectState);
+    zoomContainer.removeEventListener('pan', cancelSelectState);
   }
 
   function showTooltip(d) {
@@ -133,11 +149,6 @@ function createMap(mapModel, options) {
       window.clearTimeout(selectStateTimeout);
       selectStateTimeout = 0;
     }
-  }
-
-  function scheduleSelectState() {
-    cancelSelectState();
-    selectStateTimeout = setTimeout(selectState.bind(this), 200);
   }
 
   function onWindowResize() {
@@ -204,9 +215,10 @@ function createMap(mapModel, options) {
 
     paths.each(function(d) {
       var countryId = mapModel.getName(d);
+
       idToPath.push({
         id: countryId,
-        path: getPathOverride(countryId) || this.getAttribute('d')
+        path: this.getAttribute('d')
       });
     })
 
@@ -256,9 +268,3 @@ function createMap(mapModel, options) {
 }
 
 function px(x) { return x + 'px'; }
-
-function getPathOverride(countryId) {
-  // if (countryId === 'Indonesia') {
-  //   return 'M1010,348L1187,348L1187,380L1010,380Z';
-  // }
-}

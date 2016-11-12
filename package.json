@@ -17,6 +17,7 @@
     "url": "https://github.com/anvaka/what-people-google"
   },
   "dependencies": {
+    "ngraph.events": "0.0.4",
     "panzoom": "^2.3.1"
   },
   "devDependencies": {
