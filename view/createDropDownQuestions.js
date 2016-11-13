@@ -15,6 +15,15 @@ function createDropDownQuestions(container, questions, onChanged) {
   var selectedOption = findSelected(questions);
   setLabelText(selectedOption);
 
+  return {
+    dispose: dispose
+  }
+
+  function dispose() {
+    select.removeEventListener('change', onSelectChanged);
+    container.removeChild(select);
+  }
+
   function onSelectChanged(e) {
     var selectedValue = e.target.value;
     setLabelText(findByValue(e.target.value));

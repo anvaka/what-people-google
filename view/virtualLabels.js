@@ -27,6 +27,7 @@ function makeVirtualLabels(container, getTransform) {
     parent.removeEventListener('zoom', handleZoom)
     parent.removeEventListener('pan', handleZoom)
     parent.removeEventListener('panend', handleZoom)
+    container.remove();
   }
 
   function handleZoom() {

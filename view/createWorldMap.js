@@ -34,7 +34,6 @@ function createMap(mapModel, options) {
   var mapBackground = makeMapBackground();
   var statesOutline = makeStatesOutline();
   var zoomContainer = statesOutline.node();
-  var textLayer;
   var tooltip = makeTooltip(document.querySelector('.tooltip'));
 
   // Then we make zoomable/panable
@@ -108,9 +107,7 @@ function createMap(mapModel, options) {
   }
 
   function refreshLabels() {
-    if (textLayer) textLayer.remove();
-
-    textLayer = makeTextLayer();
+    makeTextLayer();
   }
 
   function listenToEvents() {
@@ -226,10 +223,11 @@ function createMap(mapModel, options) {
   }
 
   function makeTextLayer() {
-    var container = statesOutline.append('g').attr('class', 'states-names');
     if (virtualLabels) {
       virtualLabels.dispose()
     }
+
+    var container = statesOutline.append('g').attr('class', 'states-names');
 
     virtualLabels = makeVirtualLabels(container, function() {
       if (zoomer) return zoomer.getTransform()
