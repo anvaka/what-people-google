@@ -1,8 +1,8 @@
-# [what-people-google](https://what-people-google.anvaka.com/?map=world)
+# [what-people-google](https://what-people-google.anvaka.com/)
 
 Visualization of what people google:
 
-[![country name is not...](https://raw.githubusercontent.com/anvaka/what-people-google/master/docs/why_is.png)](https://what-people-google.anvaka.com/?map=world)
+[![why is...](https://raw.githubusercontent.com/anvaka/what-people-google/master/docs/why_is.png)](https://what-people-google.anvaka.com/#?map=world)
 
 For each country (or state) it renders top Google autocomplete results as a map.
 
@@ -18,8 +18,8 @@ Currently it renders answers for the following questions:
 
 Play with it here:
 
-## [World](https://what-people-google.anvaka.com/?map=world)
-## [United States](https://what-people-google.anvaka.com/?map=usa)
+## [World](https://what-people-google.anvaka.com/#?map=world)
+## [United States](https://what-people-google.anvaka.com/#?map=usa)
 
 If you want to have your own question rendered - open issue [here](https://github.com/anvaka/what-people-google/issues).
 
