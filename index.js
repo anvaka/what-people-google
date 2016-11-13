@@ -5,7 +5,7 @@ var loadData = require('./lib/loadData.js');
 var createSideMenu = require('./view/createSideMenu.js');
 var queryState = require('./lib/queryString.js')();
 
-var currentMapName = queryState.getValue('map') || 'world';
+var lastMapName = getCurrentMapName();
 var currentMap;
 
 loadData(queryState, showMap);
@@ -18,10 +18,11 @@ var mapNameToViewFunction = {
   usa: require('./view/createUSAMap.js')
 }
 
-function updateCurrentMap(queryString) {
-  if (currentMapName !== queryString.map) {
+function updateCurrentMap() {
+  var newName = getCurrentMapName();
+  if (lastMapName !== newName) {
     currentMap.unload();
-    currentMapName = queryString.map;
+    lastMapName = newName
     loadData(queryState, showMap);
   }
 }
@@ -46,7 +47,7 @@ function showMap(mapData, queries) {
   );
 
   // This component renders map
-  currentMap = mapNameToViewFunction[currentMapName](mapData, {
+  currentMap = mapNameToViewFunction[getCurrentMapName()](mapData, {
     // method called to render a label on top of a state.
     getLabel: function(stateName) {
       return query.getAutoCompleteTextForState(stateName);
@@ -83,4 +84,8 @@ function showMap(mapData, queries) {
   function getPrecomputedQueries() {
     return queries.listQueries(selectedQuery);
   }
+}
+
+function getCurrentMapName() {
+  return queryState.getValue('map') || 'world';
 }
