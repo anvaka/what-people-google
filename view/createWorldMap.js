@@ -14,6 +14,7 @@ var createPolyText = require('../lib/poly-text/index.js');
 var makeCountryLabels = require('../lib/containerLabels.js');
 var makeVirtualLabels = require('./virtualLabels.js');
 var countryColors = require('./getCountryColor.js')();
+var saveCurrentTransform = require('../lib/saveCurrentTransform.js');
 
 module.exports = createMap;
 
@@ -45,7 +46,7 @@ function createMap(mapModel, options) {
     zoomDoubleClickSpeed: 4, // 4x zoom on double tap
   });
 
-  centerScene();
+  setInitialCoordinates();
 
   var selectedState = d3.select(null);
   var selectStateTimeout; // used to differentiate between pan and select events
@@ -86,6 +87,19 @@ function createMap(mapModel, options) {
     svg.remove();
   }
 
+
+  function setInitialCoordinates() {
+    var transform = getTransformFromQueryState(options.queryState);
+    if (transform) {
+      var dw = transform.w - window.innerWidth;
+      var dh = transform.h - window.innerHeight;
+      zoomer.zoomAbs(0, 0, transform.scale);
+      zoomer.moveTo(transform.x - dw * 0.5, transform.y - dh * 0.5);
+    } else {
+      centerScene();
+    }
+  }
+
   function centerScene() {
     var sceneRect = zoomContainer.getBBox()
     zoomer.moveBy(-sceneRect.x, -sceneRect.y)
@@ -119,16 +133,16 @@ function createMap(mapModel, options) {
       .on('mousemove', showTooltip)
       .on('mouseleave', hideTooltip);
 
-    zoomContainer.addEventListener('panstart', cancelSelectState);
-    zoomContainer.addEventListener('zoom', cancelSelectState);
-    zoomContainer.addEventListener('pan', cancelSelectState);
+    zoomContainer.addEventListener('panstart', panZoomChanged);
+    zoomContainer.addEventListener('zoom', panZoomChanged);
+    zoomContainer.addEventListener('pan', panZoomChanged);
   }
 
   function releaseEvents() {
     window.removeEventListener('resize', onWindowResize, false);
-    zoomContainer.removeEventListener('panstart', cancelSelectState);
-    zoomContainer.removeEventListener('zoom', cancelSelectState);
-    zoomContainer.removeEventListener('pan', cancelSelectState);
+    zoomContainer.removeEventListener('panstart', panZoomChanged);
+    zoomContainer.removeEventListener('zoom', panZoomChanged);
+    zoomContainer.removeEventListener('pan', panZoomChanged);
   }
 
   function showTooltip(d) {
@@ -139,6 +153,11 @@ function createMap(mapModel, options) {
 
   function hideTooltip() {
     tooltip.hide();
+  }
+
+  function panZoomChanged() {
+    cancelSelectState();
+    saveCurrentTransform(zoomer.getTransform(), options.queryState);
   }
 
   function cancelSelectState() {
@@ -250,19 +269,20 @@ function createMap(mapModel, options) {
 
     return container;
   }
-
-
-  function selectState() {
-    selectStateTimeout = 0;
-    if (selectedState.node() === this) return reset();
-
-    selectedState.classed('active', false);
-    selectedState = d3.select(this).classed('active', true);
-
-    var selectedStateName = this.id;
-
-    options.onStateSelected(selectedStateName);
-  }
 }
 
 function px(x) { return x + 'px'; }
+
+function getTransformFromQueryState(query) {
+  var x = parseFloat(query.getValue('x'));
+  var y = parseFloat(query.getValue('y'));
+  var scale = parseFloat(query.getValue('scale'));
+  if (Number.isNaN(x) || Number.isNaN(y) || Number.isNaN(scale)) return;
+
+  var w = parseInt(query.getValue('w'), 10);
+  var h = parseInt(query.getValue('h'), 10);
+
+  if (Number.isNaN(w)) w = window.innerWidth;
+  if (Number.isNaN(h)) h = window.innerHeight;
+  return { x: x, y: y, scale: scale, w: w, h: h};
+}

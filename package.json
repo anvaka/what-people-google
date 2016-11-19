@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "ngraph.events": "0.0.4",
-    "panzoom": "^2.3.1"
+    "panzoom": "^2.4.2"
   },
   "devDependencies": {
     "browserify": "^13.1.0",

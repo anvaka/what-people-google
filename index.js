@@ -53,6 +53,8 @@ function showMap(map) {
 
   // This component renders map
   currentMap = mapNameToViewFunction[getCurrentMapName()](map.mapData, {
+    queryState: queryState,
+
     // method called to render a label on top of a state.
     getLabel: function(stateName) {
       return query.getAutoCompleteTextForState(stateName);
