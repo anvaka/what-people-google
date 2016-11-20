@@ -274,13 +274,13 @@ function createMap(mapModel, options) {
 function px(x) { return x + 'px'; }
 
 function getTransformFromQueryState(query) {
-  var x = parseFloat(query.getValue('x'));
-  var y = parseFloat(query.getValue('y'));
-  var scale = parseFloat(query.getValue('scale'));
+  var x = parseFloat(query.get('x'));
+  var y = parseFloat(query.get('y'));
+  var scale = parseFloat(query.get('scale'));
   if (Number.isNaN(x) || Number.isNaN(y) || Number.isNaN(scale)) return;
 
-  var w = parseInt(query.getValue('w'), 10);
-  var h = parseInt(query.getValue('h'), 10);
+  var w = parseInt(query.get('w'), 10);
+  var h = parseInt(query.get('h'), 10);
 
   if (Number.isNaN(w)) w = window.innerWidth;
   if (Number.isNaN(h)) h = window.innerHeight;

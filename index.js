@@ -1,17 +1,17 @@
 // This is the main entry point to the site. I hope you enjoy reading and improving this code!
 //
 // Happy reading :)!
-var loadMap = require('./lib/loadData.js');
+var loadData = require('./lib/loadData.js');
 var createSideMenu = require('./view/createSideMenu.js');
-var queryState = require('./lib/queryState.js')();
+var queryState = require('query-state').instance();
 var getQueryFile = require('./lib/getQueryFile.js');
 
 var lastMapName = getCurrentMapName();
 var currentMap;
 
-loadMap(queryState, showMap);
+loadData(queryState, showMap);
 
-queryState.on('changed', updateCurrentMap);
+queryState.onChange(updateCurrentMap);
 
 // TODO: this should be moved to 'load data'
 var mapNameToViewFunction = {
@@ -24,7 +24,7 @@ function updateCurrentMap() {
   if (lastMapName !== newName) {
     currentMap.unload();
     lastMapName = newName
-    loadMap(queryState, showMap);
+    loadData(queryState, showMap);
   }
 }
 
@@ -74,7 +74,7 @@ function showMap(map) {
   function onNewQuerySelected(queryId) {
     // Let's clean everything that was selected before
     currentMap.reset();
-    queryState.setValue('q', queryId);
+    queryState.set('q', queryId);
 
     // update database and re-render labels.
     query = queries.getQuery(queryId);
@@ -83,7 +83,7 @@ function showMap(map) {
 
 
   function onNewDateSelected(date) {
-    queryState.setValue('queryFile', date);
+    queryState.set('queryFile', date);
     currentMap.reset();
 
     getQueryFile(getCurrentMapName(), date, function(result) {
@@ -99,7 +99,7 @@ function showMap(map) {
     queries = newQueries;
     // show "why-is" question by default.
     var defaultQuery = 'why-is';
-    var selectedQuery = queryState.getValue('q') || defaultQuery;
+    var selectedQuery = queryState.get('q') || defaultQuery;
     query = queries.getQuery(selectedQuery, defaultQuery);
 
     // drop down that pretends to be an input box.
@@ -118,7 +118,7 @@ function showMap(map) {
 }
 
 function getCurrentMapName() {
-  return queryState.getValue('map') || 'world';
+  return queryState.get('map') || 'world';
 }
 
 // just a shortcut for `document.querySelector()`.
