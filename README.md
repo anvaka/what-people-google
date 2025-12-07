@@ -2,7 +2,7 @@
 
 Visualization of what people google:
 
-[![why is...](https://raw.githubusercontent.com/anvaka/what-people-google/master/docs/why_is.png)](https://what-people-google.anvaka.com/#?map=world)
+[![why is...](https://raw.githubusercontent.com/anvaka/what-people-google/main/docs/why_is.png)](https://what-people-google.anvaka.com/#?map=world)
 
 For each country (or state) it renders top Google autocomplete results as a map.
 
@@ -26,7 +26,7 @@ If you want to have your own question rendered - open issue [here](https://githu
 # How it is made?
 
 For each name, I collected top 10 autosuggestions from Google. I use topojson and D3 to render map.
-You can explore source code starting from the [`index.js`](https://github.com/anvaka/what-people-google/blob/master/index.js) file.
+You can explore source code starting from the [`index.js`](https://github.com/anvaka/what-people-google/blob/main/index.js) file.
 Below is a little bit more context.
 
 ## Queries suggestions
